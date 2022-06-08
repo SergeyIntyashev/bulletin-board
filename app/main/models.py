@@ -21,7 +21,7 @@ class User(AbstractUser):
         ('unactivated', 'unactivated'),
     ]
 
-    username = None
+    username = models.CharField('name', max_length=255)
     firstname = models.CharField('name', max_length=255)
     lastname = models.CharField('last name', max_length=255)
     middlename = models.CharField('middle name', max_length=255, blank=True)
@@ -30,6 +30,8 @@ class User(AbstractUser):
     phone = PhoneNumberField()
     info = models.CharField('time to call', max_length=3000)
     status = models.CharField('status', max_length=20, choices=STATUS_LIST, default='active')
+    created_at = models.DateTimeField('created at', auto_now_add=True)
+    updated_at = models.DateTimeField('updated at', auto_now=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -45,6 +47,8 @@ class Region(models.Model):
 
     title = models.CharField('title', max_length=255)
     slug = models.SlugField(unique=True, blank=True)
+    created_at = models.DateTimeField('created at', auto_now_add=True)
+    updated_at = models.DateTimeField('updated at', auto_now=True)
 
     def __str__(self):
         return self.title
@@ -65,6 +69,8 @@ class City(models.Model):
         null=True,
         verbose_name='region'
     )
+    created_at = models.DateTimeField('created at', auto_now_add=True)
+    updated_at = models.DateTimeField('updated at', auto_now=True)
 
     def __str__(self):
         return self.title
@@ -108,7 +114,7 @@ class Announcement(models.Model):
     updated_at = models.DateTimeField('updated at', auto_now=True)
 
     def __str__(self):
-        return f'uuid: {self.uuid} owner email: {self.user.email} status: {self.status}'
+        return f'uuid: {self.uuid} owner email: {self.owner.email} status: {self.status}'
 
     class Meta:
         ordering = ['-created_at']
@@ -124,6 +130,8 @@ class Category(models.Model):
     title = models.CharField('title', max_length=255, blank=False)
     description = models.CharField('description', max_length=5000, blank=True)
     slug = models.SlugField(unique=True),
+    created_at = models.DateTimeField('created at', auto_now_add=True)
+    updated_at = models.DateTimeField('updated at', auto_now=True)
 
     def __str__(self):
         return self.title
@@ -137,6 +145,8 @@ class Image(models.Model):
 
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=announcement_directory_path, null=True, blank=True)
+    created_at = models.DateTimeField('created at', auto_now_add=True)
+    updated_at = models.DateTimeField('updated at', auto_now=True)
 
     def __str__(self):
         return f'id: {self.id} announcement: {self.announcement.uuid}'
